@@ -4,14 +4,15 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'deploy/**'
 
 env:
   IMAGE_NAME: yjring/demo_app
-  DOCKER_USERNAME: yjring
+  DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
   VERSION: 1.0.3
-  ACCESS_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
-
+  
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
