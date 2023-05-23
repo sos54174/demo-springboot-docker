@@ -54,20 +54,12 @@ jobs:
 
     steps:
     - name: Scan Image
-      id: scan
       uses: neuvector/scan-action@main
       with:
         image-repository: ${{ env.IMAGE_NAME }}
         image-tag: ${{ steps.extract_version.outputs.VERSION }}
         min-high-cves-to-fail: "1"
         min-medium-cves-to-fail: "1"
-      continue-on-error: true
-
-    - name: Archive Scan Results
-      uses: actions/upload-artifact@v2
-      with:
-        name: Scan Results
-        path: ./scan-results
 
   update-yaml:
     needs: scan
