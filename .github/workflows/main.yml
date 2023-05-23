@@ -49,23 +49,34 @@ jobs:
         docker build -t ${{ env.IMAGE_NAME }}:${{ steps.extract_version.outputs.VERSION }} .
 
     - name: Scan Image
+      id: scan
       uses: neuvector/scan-action@main
       with:
         image-repository: ${{ env.IMAGE_NAME }}
         image-tag: ${{ steps.extract_version.outputs.VERSION }}
         min-high-cves-to-fail: "1"
         min-medium-cves-to-fail: "1"
+      continue-on-error: true
+
+    - name: Archive Scan Results
+      uses: actions/upload-artifact@v2
+      with:
+        name: Scan Results
+        path: ./scan-results
 
     - name: Push Image
+      if: steps.scan.outcome == 'success'
       run: |
         docker push ${{ env.IMAGE_NAME }}:${{ steps.extract_version.outputs.VERSION }}
 
     - name: Update Kubernetes deployment
+      if: steps.scan.outcome == 'success'
       run: |
         find ./deploy -type f -name "*.yaml" -exec sed -i 's@image: .*@image: '"${{ env.IMAGE_NAME }}:${{ steps.extract_version.outputs.VERSION }}"'@' {} \;
         cat ./deploy/deployment.yaml
 
     - name: Commit changes
+      if: steps.scan.outcome == 'success'
       run: |
         git config --local user.email "yjring@gmail.com"
         git config --local user.name "DannyYang"
