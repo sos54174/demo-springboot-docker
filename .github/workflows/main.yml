@@ -52,8 +52,8 @@ jobs:
 
     - name: Commit changes
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+        git config --local user.email "yjring@gmail.com"
+        git config --local user.name "DannyYang"
         git add ./deploy/*.yaml
         git commit -m "Update image version to ${{ env.VERSION }}" -a
         git push https://${{ secrets.REPOSITORY_TOKEN }}@github.com/DannyYang/demo-springboot-docker.git
