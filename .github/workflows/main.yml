@@ -45,13 +45,9 @@ jobs:
         password: ${{ env.DOCKER_PASSWORD }}
 
     - name: Build Image
-      id: docker_build
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: false
-        tags: ${{ env.IMAGE_NAME }}:${{ steps.extract_version.outputs.VERSION }}
-        
+      run: |
+        docker build -t ${{ env.IMAGE_NAME }}:${{ steps.extract_version.outputs.VERSION }} .
+
     - name: Scan Image
       uses: neuvector/scan-action@main
       with:
@@ -61,11 +57,8 @@ jobs:
         min-medium-cves-to-fail: "1"
 
     - name: Push Image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: ${{ env.IMAGE_NAME }}:${{ steps.extract_version.outputs.VERSION }}
+      run: |
+        docker push ${{ env.IMAGE_NAME }}:${{ steps.extract_version.outputs.VERSION }}
 
     - name: Update Kubernetes deployment
       run: |
