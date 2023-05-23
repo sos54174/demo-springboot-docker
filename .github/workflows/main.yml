@@ -48,6 +48,7 @@ jobs:
     - name: Update Kubernetes deployment
       run: |
         find ./deploy -type f -name "*.yaml" -exec sed -i 's@image: .*@image: '"${{ env.IMAGE_NAME }}:${{ env.VERSION }}"'@' {} \;
+        cat ./deploy/deployment.yaml
 
     - name: Commit changes
       run: |
@@ -55,4 +56,4 @@ jobs:
         git config --local user.name "GitHub Action"
         git add ./deploy/*.yaml
         git commit -m "Update image version to ${{ env.VERSION }}" -a
-        git push https://DannyYang:${{ secrets.REPOSITORY_TOKEN }}@github.com/DannyYang/demo-springboot-docker.git
+        git push https://${{ secrets.REPOSITORY_TOKEN }}@github.com/DannyYang/demo-springboot-docker.git
