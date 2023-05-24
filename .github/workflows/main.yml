@@ -12,7 +12,7 @@ env:
   ACCESS_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,19 +44,13 @@ jobs:
         username: ${{ env.DOCKER_USERNAME }}
         password: ${{ env.DOCKER_PASSWORD }}
 
-    - name: Build Image
-      run: |
-        docker build -t ${{ env.IMAGE_NAME }}:${{ steps.extract_version.outputs.VERSION }} .
-
-
-  update-yaml:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Push Image
-      run: |
-        docker push ${{ env.IMAGE_NAME }}:${{ steps.extract_version.outputs.VERSION }}
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ${{ env.IMAGE_NAME }}:${{ steps.extract_version.outputs.VERSION }}
 
     - name: Update Kubernetes deployment
       run: |
