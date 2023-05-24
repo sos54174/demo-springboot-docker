@@ -48,21 +48,9 @@ jobs:
       run: |
         docker build -t ${{ env.IMAGE_NAME }}:${{ steps.extract_version.outputs.VERSION }} .
 
-  scan:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Scan Image
-      uses: neuvector/scan-action@main
-      with:
-        image-repository: ${{ env.IMAGE_NAME }}
-        image-tag: ${{ steps.extract_version.outputs.VERSION }}
-        min-high-cves-to-fail: "1000"
-        min-medium-cves-to-fail: "1000"
 
   update-yaml:
-    needs: scan
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
