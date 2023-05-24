@@ -10,4 +10,13 @@ class HelloworldApplicationTests {
 	void contextLoads() {
 	}
 
+	 // 1. Unit Test
+    @Test
+    void helloTest() throws Exception {
+        mockMvc.perform(get("/")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().string("Hello Tekton!! v2"));
+    }
+
 }
